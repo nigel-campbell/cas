@@ -5,22 +5,11 @@ import (
 	"crypto/rand"
 	"flag"
 	"fmt"
-	//"html/template"
 	"github.com/golang/glog"
 	"github.com/nigel-campbell/cas"
 	"net/http"
 	"net/url"
 	"text/template"
-	//"gopkg.in/cas.v2"
-	//"reflect"
-	//"strings"
-	//"io/ioutil"
-	//"time"
-	//"os"
-	//"log"
-	//"strings"
-	//"io/ioutil"
-	//"os"
 )
 
 type myHandler struct{}
@@ -150,7 +139,7 @@ func (h *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//serviceUrl := query.Get("service")
 	fmt.Println("Response*************\n: ", r)
 	//fmt.Println("URL: \n", r.URL.RawPath)
-	fmt.Printf("Req: %s %s\n", r.Host, r.URL.Path)
+	fmt.Printf("Req: %s%s\n", r.Host, r.URL.Path)
 	fmt.Printf("Ticket %s: ", ticket)
 
 	html.WriteTo(w)
