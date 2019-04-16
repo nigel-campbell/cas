@@ -180,14 +180,13 @@ func (c *Client) ServiceValidateUrlForRequest(ticket string, r *http.Request) (s
 	return u.String(), nil
 }
 
-
 // ValidateUrlForRequest determines the CAS validate URL for the ticket and http.Request.
 func (c *Client) ValidateUrlForRequest(ticket string, r *http.Request) (string, error) {
 
 	var validateSuffix = ""
 	if c.CasVersion == "CAS_2_SAML_1_0" {
 		validateSuffix = "samlValidate"
-	}else {
+	} else {
 		validateSuffix = "validate"
 	}
 
@@ -205,7 +204,7 @@ func (c *Client) ValidateUrlForRequest(ticket string, r *http.Request) (string, 
 
 	if c.CasVersion == "CAS_2_SAML_1_0" {
 		q.Add("TARGET", sanitisedURLString(service))
-	} else{
+	} else {
 		q.Add("service", sanitisedURLString(service))
 		q.Add("ticket", ticket)
 	}
@@ -297,7 +296,7 @@ func (c *Client) validateTicket(ticket string, service *http.Request) error {
 	}
 
 	if glog.V(2) {
-		glog.Infof("Request %v %v returned %v",
+		glog.Infof("Request %s %s returned %s",
 			r.Method, r.URL,
 			resp.Status)
 	}
@@ -361,7 +360,7 @@ func (c *Client) validateTicketCas1(ticket string, service *http.Request) error 
 	}
 
 	if glog.V(2) {
-		glog.Info("Request %v %v returned %v",
+		glog.Infof("Request %v %v returned %v",
 			r.Method, r.URL,
 			resp.Status)
 	}
@@ -402,7 +401,6 @@ func (c *Client) validateTicketCas1(ticket string, service *http.Request) error 
 	return nil
 }
 
-
 func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) error {
 	u, err := c.ValidateUrlForRequest(ticket, service)
 	if err != nil {
@@ -432,7 +430,7 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 	r.Header.Add("User-Agent", "Golang CAS client gopkg.in/cas")
 
 	if glog.V(2) {
-		glog.Info("Attempting ticket validation with %v", r.URL)
+		glog.Infof("Attempting ticket validation with %v", r.URL)
 	}
 
 	resp, err := c.client.Do(r)
@@ -441,7 +439,7 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 	}
 
 	if glog.V(2) {
-		glog.Info("Request %v %v returned %v",
+		glog.Infof("Request %s %s returned %s",
 			r.Method, r.URL,
 			resp.Status)
 	}
@@ -453,6 +451,9 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 		return err
 	}
 
+	// TODO
+	// Marshall XML response into data structure
+	// that includes attributes.
 	body := string(data)
 
 	if resp.StatusCode != http.StatusOK {
