@@ -462,6 +462,7 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 
 	if glog.V(2) {
 		glog.Infof("Received authentication response\n%v", body)
+		glog.Flush()
 	}
 
 	if body == "no\n\n" {
@@ -469,7 +470,8 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 	}
 
 	success := &AuthenticationResponse{
-		User: body[4 : len(body)-1],
+		// User: body[4 : len(body)-1],
+		User: body,
 	}
 
 	if glog.V(2) {
