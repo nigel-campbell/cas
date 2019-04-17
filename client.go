@@ -451,9 +451,6 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 		return err
 	}
 
-	// TODO
-	// Marshall XML response into data structure
-	// that includes attributes.
 	body := string(data)
 
 	if resp.StatusCode != http.StatusOK {
@@ -469,13 +466,16 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 		return nil // not logged in
 	}
 
+	// TODO
+	// Body needs to be parsed into relevant attributes
+	// need to be marshalled into authentication response.
 	success := &AuthenticationResponse{
-		// User: body[4 : len(body)-1],
 		User: body,
 	}
 
 	if glog.V(2) {
 		glog.Infof("Parsed ServiceResponse: %#v", success)
+		glog.Infof("ServiceResponse body \n%s", body)
 	}
 
 	if err := c.tickets.Write(ticket, success); err != nil {
