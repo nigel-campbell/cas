@@ -8,8 +8,8 @@ import (
 )
 
 type Envelope struct {
-	XMLName xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
-	Soap    *SoapBody
+	XMLName xml.Name // `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
+	Body    *SoapBody
 }
 
 type SoapBody struct {
@@ -18,18 +18,18 @@ type SoapBody struct {
 }
 
 type SoapResponse struct {
-	XMLName xml.Name `xml:"urn:oasis:names:tc:SAML:1.0:protocol/ Response"`
+	XMLName xml.Name `xml:Response"`
 	Status  SoapStatus
 }
 
 type SoapStatus struct {
-	XMLName    xml.Name `xml:"urn:oasis:names:tc:SAML:1.0:protocol/ Status"`
+	XMLName    xml.Name `xml:Status"`
 	StatusCode SoapStatusCode
 }
 
 type SoapStatusCode struct {
-	XMLName         xml.Name `xml:"urn:oasis:names:tc:SAML:1.0:protocol/ StatusCode"`
-	StatusCodeValue string
+	XMLName xml.Name `xml:StatusCode"`
+	Value   string   `xml:"Value,attr"`
 }
 
 func TestAttributeMarshall(t *testing.T) {
@@ -41,5 +41,5 @@ func TestAttributeMarshall(t *testing.T) {
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
-	fmt.Printf("%v\n", envelope.Soap)
+	fmt.Printf("%v\n", envelope.Body)
 }
