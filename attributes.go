@@ -2,9 +2,6 @@ package cas
 
 import (
 	"encoding/xml"
-	"fmt"
-	"io/ioutil"
-	"testing"
 )
 
 type Envelope struct {
@@ -62,22 +59,4 @@ type SAMLAttribute struct {
 	XMLName        xml.Name `xml:Attribute`
 	AttributeName  string   `xml:"AttributeName,attr"`
 	AttributeValue []string `xml:AttributeValue`
-}
-
-func TestAttributeMarshall(t *testing.T) {
-	file, _ := ioutil.ReadFile("./_examples/response_pretty.xml")
-
-	var envelope Envelope
-
-	err := xml.Unmarshal(file, &envelope)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-	}
-	for _, attribute := range envelope.Body.Response.Assertion.Attributes {
-		if attribute.AttributeName == "gtAccountEntitlement" {
-			for _, value := range attribute.AttributeValue {
-				fmt.Println(value)
-			}
-		}
-	}
 }
