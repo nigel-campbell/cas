@@ -49,8 +49,7 @@ type SoapAuthenticationStatement struct {
 }
 
 type SoapAttributeStatement struct {
-	XMLName xml.Name `xml:AttributeStatement`
-	// Subject    SAMLSubject
+	XMLName    xml.Name        `xml:AttributeStatement`
 	Attributes []SAMLAttribute `xml:">Attribute"`
 }
 
@@ -74,7 +73,11 @@ func TestAttributeMarshall(t *testing.T) {
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
-	for _, value := range envelope.Body.Response.Assertion.Attributes {
-		fmt.Println(value)
+	for _, attribute := range envelope.Body.Response.Assertion.Attributes {
+		if attribute.AttributeName == "gtAccountEntitlement" {
+			for _, value := range attribute.AttributeValue {
+				fmt.Println(value)
+			}
+		}
 	}
 }
