@@ -37,8 +37,7 @@ type SoapAssertion struct {
 	XMLName                 xml.Name `xml:Assertion`
 	Conditions              SoapConditions
 	AuthenticationStatement SoapAuthenticationStatement
-	// AttributeStatement      SoapAttributeStatement
-	Attributes []SAMLAttribute `xml:"AttributeStatement>Attribute"`
+	Attributes              []SAMLAttribute `xml:"AttributeStatement>Attribute"`
 }
 
 type SoapConditions struct {
@@ -63,7 +62,7 @@ type SAMLSubject struct {
 type SAMLAttribute struct {
 	XMLName        xml.Name `xml:Attribute`
 	AttributeName  string   `xml:"AttributeName,attr"`
-	AttributeValue string   `xml:AttributeValue`
+	AttributeValue []string `xml:AttributeValue`
 }
 
 func TestAttributeMarshall(t *testing.T) {
@@ -75,5 +74,7 @@ func TestAttributeMarshall(t *testing.T) {
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
-	fmt.Printf("%v\n", envelope.Body.Response.Assertion)
+	for _, value := range envelope.Body.Response.Assertion.Attributes {
+		fmt.Println(value)
+	}
 }
