@@ -24,7 +24,7 @@ func parseLogoutRequest(data []byte) (*logoutRequest, error) {
 		return nil, err
 	}
 
-	t, err := parseDate(l.RawIssueInstant)
+	t, err := time.Parse(time.RFC1123Z, l.RawIssueInstant)
 	if err != nil {
 		return nil, err
 	}
@@ -36,19 +36,7 @@ func parseLogoutRequest(data []byte) (*logoutRequest, error) {
 	return l, nil
 }
 
-func parseDate(raw string) (time.Time, error) {
-	t, err := time.Parse(time.RFC1123Z, raw)
-	if err != nil {
-		// if RFC1123Z does not match, we will try iso8601
-		t, err = time.Parse("2006-01-02T15:04:05Z0700", raw)
-		if err != nil {
-			return t, err
-		}
-	}
-	return t, nil
-}
-
-func newLogoutRequestID() string {
+func newLogoutRequestId() string {
 	const alphabet = "abcdef0123456789"
 
 	// generate 64 character string
@@ -66,7 +54,7 @@ func xmlLogoutRequest(ticket string) ([]byte, error) {
 	l := &logoutRequest{
 		Version:      "2.0",
 		IssueInstant: time.Now().UTC(),
-		ID:           newLogoutRequestID(),
+		ID:           newLogoutRequestId(),
 		NameID:       "@NOT_USED@",
 		SessionIndex: ticket,
 	}

@@ -100,6 +100,14 @@ func Attributes(r *http.Request) UserAttributes {
 	return nil
 }
 
+func MarshalledResponse(r *http.Request) Envelope {
+	var envelope Envelope
+	if a := getAuthenticationResponse(r); a != nil {
+		envelope = a.Response
+	}
+	return envelope
+}
+
 // AuthenticationDate returns the date and time that authentication was performed.
 //
 // This may return time.IsZero if Authentication Date information is not included

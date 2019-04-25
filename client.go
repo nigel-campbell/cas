@@ -1,13 +1,20 @@
 package cas
 
 import (
+	"bytes"
 	"crypto/rand"
+	"encoding/xml"
 	"fmt"
+	"github.com/golang/glog"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
+	"path"
+	"strings"
 	"sync"
-
-	"github.com/golang/glog"
+	"text/template"
+	"time"
 )
 
 // Client configuration options
@@ -16,21 +23,42 @@ type Options struct {
 	Store       TicketStore  // Custom TicketStore, if nil a MemoryStore will be used
 	Client      *http.Client // Custom http client to allow options for http connections
 	SendService bool         // Custom sendService to determine whether you need to send service param
-	URLScheme 	URLScheme	 // Custom url scheme, can be used to modify the request urls for the client
+	CasVersion  string       // Specify the version of CAS being used (E.g. '1', '2', '3', 'CAS_2_SAML_1_0'
 }
 
 // Client implements the main protocol
 type Client struct {
-	tickets   TicketStore
-	client    *http.Client
-	urlScheme URLScheme
+	url     *url.URL
+	tickets TicketStore
+	client  *http.Client
 
-	mu          sync.Mutex
-	sessions    map[string]string
-	sendService bool
-
-	stValidator *ServiceTicketValidator
+	mu              sync.Mutex
+	sessions        map[string]string
+	sendService     bool
+	CasVersion      string
+	AttributeSearch bool
+	Attribute       string
 }
+
+// Fields used in SAML validation
+type samlBinding struct {
+	RequestId string
+	Timestamp string
+	Ticket    string
+}
+
+const SAML_ASSERTION_TEMPLATE = `<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+<samlp:Request xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol"
+MajorVersion="1"
+MinorVersion="1"
+RequestID="{{.RequestId}}"
+IssueInstant="{{.Timestamp}}">
+<samlp:AssertionArtifact>{{.Ticket}}</samlp:AssertionArtifact></samlp:Request>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>`
 
 // NewClient creates a Client with the provided Options.
 func NewClient(options *Options) *Client {
@@ -45,13 +73,6 @@ func NewClient(options *Options) *Client {
 		tickets = &MemoryStore{}
 	}
 
-	var urlScheme URLScheme
-	if options.URLScheme != nil {
-		urlScheme = options.URLScheme
-	} else {
-		urlScheme = NewDefaultURLScheme(options.URL)
-	}
-
 	var client *http.Client
 	if options.Client != nil {
 		client = options.Client
@@ -60,12 +81,12 @@ func NewClient(options *Options) *Client {
 	}
 
 	return &Client{
+		url:         options.URL,
 		tickets:     tickets,
 		client:      client,
-		urlScheme:   urlScheme,
 		sessions:    make(map[string]string),
 		sendService: options.SendService,
-		stValidator: NewServiceTicketValidator(client, options.URL),
+		CasVersion:  options.CasVersion,
 	}
 }
 
@@ -90,11 +111,8 @@ func requestURL(r *http.Request) (*url.URL, error) {
 	}
 
 	u.Host = r.Host
-	if host := r.Header.Get("X-Forwarded-Host"); host != "" {
-		u.Host = host
-	}
-
 	u.Scheme = "http"
+
 	if scheme := r.Header.Get("X-Forwarded-Proto"); scheme != "" {
 		u.Scheme = scheme
 	} else if r.TLS != nil {
@@ -106,7 +124,7 @@ func requestURL(r *http.Request) (*url.URL, error) {
 
 // LoginUrlForRequest determines the CAS login URL for the http.Request.
 func (c *Client) LoginUrlForRequest(r *http.Request) (string, error) {
-	u, err := c.urlScheme.Login()
+	u, err := c.url.Parse(path.Join(c.url.Path, "login"))
 	if err != nil {
 		return "", err
 	}
@@ -125,7 +143,7 @@ func (c *Client) LoginUrlForRequest(r *http.Request) (string, error) {
 
 // LogoutUrlForRequest determines the CAS logout URL for the http.Request.
 func (c *Client) LogoutUrlForRequest(r *http.Request) (string, error) {
-	u, err := c.urlScheme.Logout()
+	u, err := c.url.Parse(path.Join(c.url.Path, "logout"))
 	if err != nil {
 		return "", err
 	}
@@ -146,21 +164,76 @@ func (c *Client) LogoutUrlForRequest(r *http.Request) (string, error) {
 
 // ServiceValidateUrlForRequest determines the CAS serviceValidate URL for the ticket and http.Request.
 func (c *Client) ServiceValidateUrlForRequest(ticket string, r *http.Request) (string, error) {
+	u, err := c.url.Parse(path.Join(c.url.Path, "serviceValidate"))
+	if err != nil {
+		return "", err
+	}
+
 	service, err := requestURL(r)
 	if err != nil {
 		return "", err
 	}
-	return c.stValidator.ServiceValidateUrl(service, ticket)
+
+	q := u.Query()
+	q.Add("service", sanitisedURLString(service))
+	q.Add("ticket", ticket)
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
 }
 
 // ValidateUrlForRequest determines the CAS validate URL for the ticket and http.Request.
 func (c *Client) ValidateUrlForRequest(ticket string, r *http.Request) (string, error) {
+
+	var validateSuffix = ""
+	if c.CasVersion == "CAS_2_SAML_1_0" {
+		validateSuffix = "samlValidate"
+	} else {
+		validateSuffix = "validate"
+	}
+
+	u, err := c.url.Parse(path.Join(c.url.Path, validateSuffix))
+	if err != nil {
+		return "", err
+	}
+
 	service, err := requestURL(r)
 	if err != nil {
 		return "", err
 	}
-	return c.stValidator.ValidateUrl(service, ticket)
+
+	q := u.Query()
+
+	if c.CasVersion == "CAS_2_SAML_1_0" {
+		q.Add("TARGET", sanitisedURLString(service))
+	} else {
+		q.Add("service", sanitisedURLString(service))
+		q.Add("ticket", ticket)
+	}
+
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
 }
+
+//// ValidateUrlForRequest determines the CAS validate URL for the ticket and http.Request.
+//func (c *Client) ValidateSamlUrlForRequest(ticket string, r *http.Request) (string, error) {
+//	u, err := c.url.Parse(path.Join(c.url.Path, "samlValidate"))
+//	if err != nil {
+//		return "", err
+//	}
+//
+//	service, err := requestURL(r)
+//	if err != nil {
+//		return "", err
+//	}
+//
+//	q := u.Query()
+//	q.Add("TARGET", sanitisedURLString(service))
+//	u.RawQuery = q.Encode()
+//
+//	return u.String(), nil
+//}
 
 // RedirectToLogout replies to the request with a redirect URL to log out of CAS.
 func (c *Client) RedirectToLogout(w http.ResponseWriter, r *http.Request) {
@@ -195,15 +268,220 @@ func (c *Client) RedirectToLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 // validateTicket performs CAS ticket validation with the given ticket and service.
+//
+// If the request returns a 404 then validateTicketCas1 will be returned.
 func (c *Client) validateTicket(ticket string, service *http.Request) error {
-	serviceUrl, err := requestURL(service)
+	if glog.V(2) {
+		serviceUrl, _ := requestURL(service)
+		glog.Infof("Validating ticket %v for service %v", ticket, serviceUrl)
+	}
+
+	u, err := c.ServiceValidateUrlForRequest(ticket, service)
 	if err != nil {
 		return err
 	}
 
-	success, err := c.stValidator.ValidateTicket(serviceUrl, ticket)
+	r, err := http.NewRequest("GET", u, nil)
 	if err != nil {
 		return err
+	}
+
+	r.Header.Add("User-Agent", "Golang CAS client gopkg.in/cas")
+
+	if glog.V(2) {
+		glog.Infof("Attempting ticket validation with %v", r.URL)
+	}
+
+	resp, err := c.client.Do(r)
+	if err != nil {
+		return err
+	}
+
+	if glog.V(2) {
+		glog.Infof("Request %s %s returned %s",
+			r.Method, r.URL,
+			resp.Status)
+	}
+
+	if resp.StatusCode == http.StatusNotFound {
+		return c.validateTicketCas1(ticket, service)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("cas: validate ticket: %v", string(body))
+	}
+
+	if glog.V(2) {
+		glog.Infof("Received authentication response\n%v", string(body))
+	}
+
+	success, err := ParseServiceResponse(body)
+	if err != nil {
+		return err
+	}
+
+	if glog.V(2) {
+		glog.Infof("Parsed ServiceResponse: %#v", success)
+	}
+
+	if err := c.tickets.Write(ticket, success); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateTicketCas1 performs CAS protocol 1 ticket validation.
+func (c *Client) validateTicketCas1(ticket string, service *http.Request) error {
+	u, err := c.ValidateUrlForRequest(ticket, service)
+	if err != nil {
+		return err
+	}
+
+	r, err := http.NewRequest("GET", u, nil)
+	if err != nil {
+		return err
+	}
+
+	r.Header.Add("User-Agent", "Golang CAS client gopkg.in/cas")
+
+	if glog.V(2) {
+		glog.Info("Attempting ticket validation with %v", r.URL)
+	}
+
+	resp, err := c.client.Do(r)
+	if err != nil {
+		return err
+	}
+
+	if glog.V(2) {
+		glog.Infof("Request %v %v returned %v",
+			r.Method, r.URL,
+			resp.Status)
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+
+	if err != nil {
+		return err
+	}
+
+	body := string(data)
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("cas: validate ticket: %v", body)
+	}
+
+	if glog.V(2) {
+		glog.Infof("Received authentication response\n%v", body)
+	}
+
+	if body == "no\n\n" {
+		return nil // not logged in
+	}
+
+	success := &AuthenticationResponse{
+		User: body[4 : len(body)-1],
+	}
+
+	if glog.V(2) {
+		glog.Infof("Parsed ServiceResponse: %#v", success)
+	}
+
+	if err := c.tickets.Write(ticket, success); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) error {
+	u, err := c.ValidateUrlForRequest(ticket, service)
+	if err != nil {
+		return err
+	}
+
+	// Craft SAML validation message via template
+	samlBinding := &samlBinding{
+		RequestId: newSessionId(),
+		Timestamp: time.Now().Format(time.RFC3339),
+		Ticket:    ticket,
+	}
+
+	// Map the binding struct to the template and load result into body of post request
+	t := template.Must(template.New("saml").Parse(SAML_ASSERTION_TEMPLATE))
+	buf := new(bytes.Buffer)
+	err = t.Execute(buf, samlBinding)
+	if err != nil {
+		log.Println("executing template:", err)
+	}
+
+	r, err := http.NewRequest("POST", u, strings.NewReader(buf.String()))
+	if err != nil {
+		return err
+	}
+
+	r.Header.Add("User-Agent", "Golang CAS client gopkg.in/cas")
+
+	if glog.V(2) {
+		glog.Infof("Attempting ticket validation with %v", r.URL)
+	}
+
+	resp, err := c.client.Do(r)
+	if err != nil {
+		return err
+	}
+
+	if glog.V(2) {
+		glog.Infof("Request %s %s returned %s",
+			r.Method, r.URL,
+			resp.Status)
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+
+	if err != nil {
+		return err
+	}
+
+	body := string(data)
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("cas: validate ticket: %v", body)
+	}
+
+	if glog.V(2) {
+		glog.Infof("Received authentication response\n%v", body)
+		glog.Flush()
+	}
+
+	if body == "no\n\n" {
+		return nil // not logged in
+	}
+
+	// Marshalls XML Body into envelop struct for fetching user attributes
+	// for SAML 2.0 attributes.
+	var envelope Envelope
+	err = xml.Unmarshal(data, &envelope)
+	if err != nil {
+		fmt.Println("Unable to unmarshal response")
+	}
+	success := &AuthenticationResponse{
+		User:     body,
+		Response: envelope,
+	}
+
+	if glog.V(2) {
+		glog.Infof("Parsed ServiceResponse: %#v", success)
 	}
 
 	if err := c.tickets.Write(ticket, success); err != nil {
@@ -241,12 +519,24 @@ func (c *Client) getSession(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// If CasVersion is set to CAS_2_SAML_1_0 invoke samlValidate otherwise invoke
+	// CAS 2 validation and fall back to CAS 1 validation.
 	if ticket := r.URL.Query().Get("ticket"); ticket != "" {
-		if err := c.validateTicket(ticket, r); err != nil {
-			if glog.V(2) {
-				glog.Infof("Error validating ticket: %v", err)
+		if c.CasVersion == "CAS_2_SAML_1_0" {
+			if err := c.validateTicketCasSaml(ticket, r); err != nil {
+				if glog.V(2) {
+					glog.Infof("Error validating ticket: %v", err)
+				}
+				return // allow ServeHTTP()
 			}
-			return // allow ServeHTTP()
+
+		} else {
+			if err := c.validateTicket(ticket, r); err != nil {
+				if glog.V(2) {
+					glog.Infof("Error validating ticket: %v", err)
+				}
+				return // allow ServeHTTP()
+			}
 		}
 
 		c.setSession(cookie.Value, ticket)
@@ -280,7 +570,7 @@ func getCookie(w http.ResponseWriter, r *http.Request) *http.Cookie {
 		//       still be used by Ajax requests.
 		c = &http.Cookie{
 			Name:     sessionCookieName,
-			Value:    newSessionID(),
+			Value:    newSessionId(),
 			MaxAge:   86400,
 			HttpOnly: false,
 		}
@@ -297,7 +587,7 @@ func getCookie(w http.ResponseWriter, r *http.Request) *http.Cookie {
 }
 
 // newSessionId generates a new opaque session identifier for use in the cookie.
-func newSessionID() string {
+func newSessionId() string {
 	const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 	// generate 64 character string
