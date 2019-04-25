@@ -2,6 +2,7 @@ package cas
 
 import (
 	"encoding/xml"
+	"fmt"
 )
 
 type Envelope struct {
@@ -59,4 +60,23 @@ type SAMLAttribute struct {
 	XMLName        xml.Name `xml:Attribute`
 	AttributeName  string   `xml:"AttributeName,attr"`
 	AttributeValue []string `xml:AttributeValue`
+}
+
+func (envelope Envelope) printAttributes() {
+	for _, attribute := range envelope.Body.Response.Assertion.Attributes {
+		for _, value := range attribute.AttributeValue {
+			fmt.Println(value)
+		}
+	}
+}
+
+func (envelope Envelope) attributeExists(attributeValue string) bool {
+	for _, attribute := range envelope.Body.Response.Assertion.Attributes {
+		for _, value := range attribute.AttributeValue {
+			if value == attributeValue {
+				return true
+			}
+		}
+	}
+	return false
 }
