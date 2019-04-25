@@ -111,6 +111,8 @@ func (h *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	envelope := cas.MarshalledResponse(r)
+
 	w.Header().Add("Content-Type", "text/html")
 
 	tmpl, err := template.New("index.html").Parse(index_html)
@@ -121,10 +123,11 @@ func (h *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Printf("Envelope %v\n", envelope)
 	binding := &templateBinding{
 		Username:   cas.Username(r),
 		Attributes: cas.Attributes(r),
-		//Ticket: cas.TicketStore.Read(cas.Username(r)),
+		// Ticket:     cas.TicketStore.Read(cas.Username(r)),
 	}
 
 	html := new(bytes.Buffer)
