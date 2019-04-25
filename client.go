@@ -1,19 +1,19 @@
 package cas
 
 import (
+	"bytes"
 	"crypto/rand"
+	"encoding/xml"
 	"fmt"
+	"github.com/golang/glog"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"path"
+	"strings"
 	"sync"
 	"text/template"
-
-	"bytes"
-	"github.com/golang/glog"
-	"log"
-	"strings"
 	"time"
 )
 
@@ -32,10 +32,12 @@ type Client struct {
 	tickets TicketStore
 	client  *http.Client
 
-	mu          sync.Mutex
-	sessions    map[string]string
-	sendService bool
-	CasVersion  string
+	mu              sync.Mutex
+	sessions        map[string]string
+	sendService     bool
+	CasVersion      string
+	AttributeSearch bool
+	Attribute       string
 }
 
 // Fields used in SAML validation
@@ -466,16 +468,20 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 		return nil // not logged in
 	}
 
-	// TODO
-	// Body needs to be parsed into relevant attributes
-	// need to be marshalled into authentication response.
+	// Marshalls XML Body into envelop struct for fetching user attributes
+	// for SAML 2.0 attributes.
+	var envelope Envelope
+	err = xml.Unmarshal(data, &envelope)
+	if err != nil {
+		fmt.Println("Unable to unmarshal response")
+	}
 	success := &AuthenticationResponse{
-		User: body,
+		User:     body,
+		Response: envelope,
 	}
 
 	if glog.V(2) {
 		glog.Infof("Parsed ServiceResponse: %#v", success)
-		glog.Infof("ServiceResponse body \n%s", body)
 	}
 
 	if err := c.tickets.Write(ticket, success); err != nil {

@@ -49,6 +49,7 @@ type AuthenticationResponse struct {
 	IsRememberedLogin   bool           // Whether a long term token was used to grant the service ticket
 	MemberOf            []string       // List of groups which the user is a member of
 	Attributes          UserAttributes // Additional information about the user
+	Response            Envelope
 }
 
 // UserAttributes represents additional data about the user
