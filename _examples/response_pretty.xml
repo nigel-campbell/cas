@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <saml1p:Response xmlns:saml1p="urn:oasis:names:tc:SAML:1.0:protocol" IssueInstant="2019-04-17T20:08:22.390Z" MajorVersion="1" MinorVersion="1" Recipient="http://cop-dev.police.gatech.edu/gocas" ResponseID="_ea5f00a2cae286660689d32b43aa5fe4">
+      <saml1p:Status>
+        <saml1p:StatusCode Value="saml1p:Success"/>
+      </saml1p:Status>
+      <saml1:Assertion xmlns:saml1="urn:oasis:names:tc:SAML:1.0:assertion" AssertionID="_dfe1371a2fd5aee1721e5d319ad3ced1" IssueInstant="2019-04-17T20:08:22.390Z" Issuer="localhost" MajorVersion="1" MinorVersion="1">
+        <saml1:Conditions NotBefore="2019-04-17T20:08:22.390Z" NotOnOrAfter="2019-04-17T20:08:52.390Z">
+          <saml1:AudienceRestrictionCondition>
+            <saml1:Audience>http://cop-dev.police.gatech.edu/gocas</saml1:Audience>
+          </saml1:AudienceRestrictionCondition>
+        </saml1:Conditions>
+        <saml1:AuthenticationStatement AuthenticationInstant="2019-04-17T20:08:22.270Z" AuthenticationMethod="urn:oasis:names:tc:SAML:1.0:am:unspecified">
+          <saml1:Subject>
+            <saml1:NameIdentifier>ncampbell7</saml1:NameIdentifier>
+            <saml1:SubjectConfirmation>
+              <saml1:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</saml1:ConfirmationMethod>
+            </saml1:SubjectConfirmation>
+          </saml1:Subject>
+        </saml1:AuthenticationStatement>
+        <saml1:AttributeStatement>
+          <saml1:Subject>
+            <saml1:NameIdentifier>ncampbell7</saml1:NameIdentifier>
+            <saml1:SubjectConfirmation>
+              <saml1:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</saml1:ConfirmationMethod>
+            </saml1:SubjectConfirmation>
+          </saml1:Subject>
+          <saml1:Attribute AttributeName="uid" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">ncampbell7</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="sn" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Campbell</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="email_all" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">ncampbell7@mail.gatech.edu</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">ncampbell7@gatech.edu</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="cn" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Campbell, Nigel A</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="email_primary" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">ncampbell7@gatech.edu</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="gtGTID" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">902913944</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="gtAccountEntitlement" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/email/ecc-zimbra-prod/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/iam-primary-person-account/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/passport/iam-passport-account-has-access-to-person/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/passport/iam-hints-required/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/passport/__iam-atgatech-address-available_accounts/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/passport/__iam-emergency-info-enabled_accounts/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/passport/__iam-gtens-info-required_accounts/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/prism/prism2/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-engineering/ece/groups/ece-ugradstudents</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_gts/groups/students/gts-local-students</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_gts/groups/students/gts-oustudents</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-engineering/ece/groups/users/ece-everyone</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/iam-overall-primary-account</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/windows/customer roles/office365/office365studentspri/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/windows/customer roles/office365/office365general-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/windows/customer roles/office365/office365dirsync/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-engineering/ece/groups/resources/ece-printers-canon-408-users</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-engineering/ece/groups/ece-ouusers</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-engineering/ece/groups/resources/ece-printers-deptcolor-users</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/gt_resources/stu_majorgroups/cs_cs</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/webex/users/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">banner.selfservice/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/iac/iac-all-gt-employees/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/gtri/gtri-esd/gtri-esd-web-default-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/unofficial employment/unofficial departmental employees (accounts)/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/gt_resources/admingroups/gtad-employees</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/two-factor/duo-user</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/cas/cas-duo-req-accounts-prod-g9/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/cas/cas-duo-req-account-prod/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/cas/cas-duo-req-account-test/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/cas/cas-duo-req-account-dev/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/passport/iam-passport-2fa-login-required/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/two-factor/active-duo-user-21d</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/two-factor/active-duo-user-90d</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/feeds/passwords/iam-feed-password-to-gtri/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/gtri/gtri-password-sync/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/iam-overall-primary-account-grs-role/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/github/github-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/delegated-admin-ui/iat/oit-iam-iat-eligible/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/windows/customer roles/office365/office365exch-eligible/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/windows/customer roles/office365/office365exch-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/windows/customer roles/office365/office365lbl-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/passport/__iam-emergency-info-required_accounts/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/two-factor/services/iam-2fa-req-everywhere/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/gtri/gtri-esd/gtri-esd-web-default-access-prod/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/gt_adm/arc/groups/coa-access-to-dfs-gtfs</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/coe/openstack/coe-openstack-eligible-accounts/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/password-policies/oit-iam-general-policy-normally-applies/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/password-policies/oit-iam-password-policy-200-general-2fa/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/gtad/oit-iam-gtad-account-disabled-when-expired/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/password-policies/oit-iam-password-policy-gtri/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/password-policies/oit-iam-password-policy-400-general/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/windows/customer roles/office365/office365general-e3-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/iac/qualtrics/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/passport/__iam-authorized-to-set-arbitrary-official-address_accounts/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_gtri/groups/gtri-ouusers</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-computing/groups/user/coc-uniflow_users</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/edm/tableau-all-gt-fac-and-staff-primary-accounts/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-computing/groups/coc-gradstudents</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/dropbox/dropbox-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_omed/groups/omedilarc</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/dropbox/dropbox-employee-eligible/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/dropbox/dropbox-access-request/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/telephony/telephony-call-manager-user/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_gtpd/groups/cop/gtpd-cop-admin</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_gtri/esd/gtri-cog-tmd</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-business/groups/cob-vlab-groups/cob-vlab-access-cob-lab</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/email/email-destination-options/ecc-eligible-for-o365-exchange-store-and-forward-disabled/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/departmental/oit/a-i/windows/customer roles/office365/office365general-a3-faculty-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/_college-of-business/groups/cob-vlab-groups/cob-vlab-access-cob-lab_remote</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/iam/two-factor/duo-user-has-backup-codes</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/buzzapi/wiki/buzzapi-wiki-edit-access/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/adobe/adobe-user-sync/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/gtad/gt_resources/stu_coursegroups/cs-7643-a-201902</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/network/firewall/fw-fac-staff-primary/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/dropbox/dropbox-eligible/enabled</saml1:AttributeValue>
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">/gt/central/services/box/box-access-excluded/enabled</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="givenName" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Nigel</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="displayName" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Nigel A Campbell</saml1:AttributeValue>
+          </saml1:Attribute>
+          <saml1:Attribute AttributeName="authn_method" AttributeNamespace="http://www.ja-sig.org/products/cas/">
+            <saml1:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">duo-two-factor</saml1:AttributeValue>
+          </saml1:Attribute>
+        </saml1:AttributeStatement>
+      </saml1:Assertion>
+    </saml1p:Response>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

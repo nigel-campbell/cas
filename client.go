@@ -1,19 +1,19 @@
 package cas
 
 import (
+	"bytes"
 	"crypto/rand"
+	"encoding/xml"
 	"fmt"
+	"github.com/golang/glog"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"path"
+	"strings"
 	"sync"
 	"text/template"
-
-	"bytes"
-	"github.com/golang/glog"
-	"log"
-	"strings"
 	"time"
 )
 
@@ -32,10 +32,12 @@ type Client struct {
 	tickets TicketStore
 	client  *http.Client
 
-	mu          sync.Mutex
-	sessions    map[string]string
-	sendService bool
-	CasVersion  string
+	mu              sync.Mutex
+	sessions        map[string]string
+	sendService     bool
+	CasVersion      string
+	AttributeSearch bool
+	Attribute       string
 }
 
 // Fields used in SAML validation
@@ -180,14 +182,13 @@ func (c *Client) ServiceValidateUrlForRequest(ticket string, r *http.Request) (s
 	return u.String(), nil
 }
 
-
 // ValidateUrlForRequest determines the CAS validate URL for the ticket and http.Request.
 func (c *Client) ValidateUrlForRequest(ticket string, r *http.Request) (string, error) {
 
 	var validateSuffix = ""
 	if c.CasVersion == "CAS_2_SAML_1_0" {
 		validateSuffix = "samlValidate"
-	}else {
+	} else {
 		validateSuffix = "validate"
 	}
 
@@ -205,7 +206,7 @@ func (c *Client) ValidateUrlForRequest(ticket string, r *http.Request) (string, 
 
 	if c.CasVersion == "CAS_2_SAML_1_0" {
 		q.Add("TARGET", sanitisedURLString(service))
-	} else{
+	} else {
 		q.Add("service", sanitisedURLString(service))
 		q.Add("ticket", ticket)
 	}
@@ -297,7 +298,7 @@ func (c *Client) validateTicket(ticket string, service *http.Request) error {
 	}
 
 	if glog.V(2) {
-		glog.Infof("Request %v %v returned %v",
+		glog.Infof("Request %s %s returned %s",
 			r.Method, r.URL,
 			resp.Status)
 	}
@@ -361,7 +362,7 @@ func (c *Client) validateTicketCas1(ticket string, service *http.Request) error 
 	}
 
 	if glog.V(2) {
-		glog.Info("Request %v %v returned %v",
+		glog.Infof("Request %v %v returned %v",
 			r.Method, r.URL,
 			resp.Status)
 	}
@@ -402,7 +403,6 @@ func (c *Client) validateTicketCas1(ticket string, service *http.Request) error 
 	return nil
 }
 
-
 func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) error {
 	u, err := c.ValidateUrlForRequest(ticket, service)
 	if err != nil {
@@ -432,7 +432,7 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 	r.Header.Add("User-Agent", "Golang CAS client gopkg.in/cas")
 
 	if glog.V(2) {
-		glog.Info("Attempting ticket validation with %v", r.URL)
+		glog.Infof("Attempting ticket validation with %v", r.URL)
 	}
 
 	resp, err := c.client.Do(r)
@@ -441,7 +441,7 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 	}
 
 	if glog.V(2) {
-		glog.Info("Request %v %v returned %v",
+		glog.Infof("Request %s %s returned %s",
 			r.Method, r.URL,
 			resp.Status)
 	}
@@ -461,14 +461,23 @@ func (c *Client) validateTicketCasSaml(ticket string, service *http.Request) err
 
 	if glog.V(2) {
 		glog.Infof("Received authentication response\n%v", body)
+		glog.Flush()
 	}
 
 	if body == "no\n\n" {
 		return nil // not logged in
 	}
 
+	// Marshalls XML Body into envelop struct for fetching user attributes
+	// for SAML 2.0 attributes.
+	var envelope Envelope
+	err = xml.Unmarshal(data, &envelope)
+	if err != nil {
+		fmt.Println("Unable to unmarshal response")
+	}
 	success := &AuthenticationResponse{
-		User: body[4 : len(body)-1],
+		User:     body,
+		Response: envelope,
 	}
 
 	if glog.V(2) {

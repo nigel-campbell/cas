@@ -5,22 +5,11 @@ import (
 	"crypto/rand"
 	"flag"
 	"fmt"
-	//"html/template"
 	"github.com/golang/glog"
 	"github.com/nigel-campbell/cas"
 	"net/http"
 	"net/url"
 	"text/template"
-	//"gopkg.in/cas.v2"
-	//"reflect"
-	//"strings"
-	//"io/ioutil"
-	//"time"
-	//"os"
-	//"log"
-	//"strings"
-	//"io/ioutil"
-	//"os"
 )
 
 type myHandler struct{}
@@ -122,6 +111,8 @@ func (h *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	envelope := cas.MarshalledResponse(r)
+
 	w.Header().Add("Content-Type", "text/html")
 
 	tmpl, err := template.New("index.html").Parse(index_html)
@@ -132,10 +123,11 @@ func (h *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Printf("Envelope %v\n", envelope)
 	binding := &templateBinding{
 		Username:   cas.Username(r),
 		Attributes: cas.Attributes(r),
-		//Ticket: cas.TicketStore.Read(cas.Username(r)),
+		// Ticket:     cas.TicketStore.Read(cas.Username(r)),
 	}
 
 	html := new(bytes.Buffer)
@@ -150,7 +142,7 @@ func (h *myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//serviceUrl := query.Get("service")
 	fmt.Println("Response*************\n: ", r)
 	//fmt.Println("URL: \n", r.URL.RawPath)
-	fmt.Printf("Req: %s %s\n", r.Host, r.URL.Path)
+	fmt.Printf("Req: %s%s\n", r.Host, r.URL.Path)
 	fmt.Printf("Ticket %s: ", ticket)
 
 	html.WriteTo(w)
